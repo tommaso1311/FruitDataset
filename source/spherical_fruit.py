@@ -1,8 +1,10 @@
 from math import pi, sqrt, cos, sin
 from source.utils import rotation_ll
+from source.cleaner import Cleaner
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors
+from skimage import color
 
 class SphericalFruit():
 	"""docstring for SphericalFruit"""
@@ -18,6 +20,8 @@ class SphericalFruit():
 		self.pixels_coordinates = SphericalFruit.generate_pixels_coordinates(n_pixels)
 		self.pixels_values = np.array([0]*n_pixels, dtype=int)
 		self.pixels_cluster = np.array([0]*n_pixels, dtype=int)
+
+		self.cleaner = Cleaner()
 
 	def generate_pixels_coordinates(n_pixels):
 
@@ -77,7 +81,7 @@ class SphericalFruit():
 		for defect_type, min_max in enumerate(defects_list, 1):
 			self.add_defects(defect_type, min_max[0], min_max[1])
 
-	def temp(self, size=(4, 4), pov=(0, 0)):
+	def generate_shot(self, size, pov):
 
 		fig, ax = plt.subplots(figsize=size)
 
@@ -88,7 +92,7 @@ class SphericalFruit():
 		projected_pixels_values = self.pixels_values[mask]
 		projected_pixels_cluster = self.pixels_cluster[mask]
 
-		clusters = np.unique(projected_pixels_cluster)
+		clusters = np.unique(projected_pixels_cluster).tolist()
 
 		for i, c in enumerate(self.colors):
 			mask = np.where(projected_pixels_values==i)
@@ -104,4 +108,25 @@ class SphericalFruit():
 		fig_array = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
 		fig_array = fig_array.reshape(fig.canvas.get_width_height()[::-1] + (3,))
 
+		fig_array = color.rgb2gray(fig_array)*255
+
+		fig_array = self.cleaner.clean(fig_array)
+
 		return fig_array, clusters
+
+	def generate_shots(self, n_shots, size=(4, 4), lon_angle_rot=(0, 1), lat_angle_rot=(0, 1)):
+
+		lon_angle, lat_angle = (0, 0)
+
+		shots_arr = []
+		clusters_list = []
+
+		for _ in range(n_shots):
+			lon_angle += np.random.randint(lon_angle_rot[0], lon_angle_rot[1])
+			lat_angle += np.random.randint(lat_angle_rot[0], lat_angle_rot[1])
+			current_shot, clusters_shot = self.generate_shot(size, (lon_angle, lat_angle))
+
+			shots_arr.append(current_shot)
+			clusters_list.append(clusters_shot)
+
+		return np.array(shots_arr), clusters_list
