@@ -30,7 +30,7 @@ class Cleaner():
 
 		return img_arr[y1m:y2m+1, x1m:x2m+1]
 
-	def threshold(img_array, thresholds=[255, 250, 90, 75], values=[255, 200, 75, 0]):
+	def threshold_array(img_array, thresholds=[255, 250, 90, 75], values=[255, 200, 75, 0]):
 		"""
 		Thresholds the image
 
@@ -51,7 +51,7 @@ class Cleaner():
 
 		return img_array
 
-	def remove_unreliable_pixels(img_array, px=0):
+	def remove_unreliable_pixels_array(img_array, px=0):
 		"""
 		Removes unreliable pixels from image
 
@@ -75,10 +75,10 @@ class Cleaner():
 
 		return np.array(img)
 
-	def clean(self, img_array, px=0):
+	def clean_array(self, img_array, px=0):
 
 		img_array = Cleaner.crop_array(img_array)
-		img_array = Cleaner.remove_unreliable_pixels(img_array, px)
-		img_array = Cleaner.threshold(img_array)
+		img_array = Cleaner.remove_unreliable_pixels_array(img_array, px)
+		img_array = Cleaner.threshold_array(img_array)
 
 		return img_array
