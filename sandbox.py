@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 fruit = SphericalFruit()
 fruit.generate_defects([(2, 3)])
 
-arr, answers = fruit.generate_shots(6, lon_angle_rot=(40, 60))
+arr, answers = fruit.generate_shots_online(6, lon_angle_rot=(40, 60))
 
-# print(arr.shape, answers)
+print(arr.shape, answers)
 
 for img in arr:
 	fig, ax = plt.subplots(figsize=(4, 4))

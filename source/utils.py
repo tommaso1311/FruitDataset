@@ -1,5 +1,8 @@
 from math import cos, sin, radians
 import numpy as np
+import os
+from natsort import natsorted, ns
+import imageio
 
 def create_rotation_matrix(point, axis, angle):
 
@@ -36,3 +39,14 @@ def rotation_ll(points_matrix, point, lon_angle, lat_angle):
 	points_matrix = rotation_matrix@points_matrix.T
 
 	return points_matrix.T
+
+def create_gif(duration=0.5, load_path="dataset/complete/", save_path="dataset/complete/"):
+
+	images = []
+	filenames = os.listdir(load_path)
+	filenames = natsorted(filenames)
+
+	for filename in filenames:
+		images.append(imageio.imread(load_path+filename))
+
+	imageio.mimsave(save_path+"complete.gif", images, duration=duration)

@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors
 from skimage import color
+import os
 
 class SphericalFruit():
 
